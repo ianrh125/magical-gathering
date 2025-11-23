@@ -1,0 +1,830 @@
+<head><base target="_blank">
+    <link rel="shortcut icon" href="#">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magical Gathering</title>
+    <style>
+        html{
+            box-sizing: border-box;
+        }
+
+        *, *:before, *:after {
+            box-sizing: inherit;
+        }
+        /* changing font for all text */
+        body{
+            font-family:'Times New Roman', Times, serif
+        }
+
+        .column{
+            vertical-align: top;
+            padding: 0px;
+            display: inline-block;
+            height: 100%;
+            width: 14%;
+            border: 1px solid black;
+        }
+
+        .card{
+            border: 8px solid black;
+            border-radius: 16px;
+            background-color: #cccccc;
+            margin: 5px;
+        }
+
+        .outer-edge{
+            border: 1px solid black;
+            border-radius: 8px;
+        }
+        
+        .title{
+            text-align: left;
+            font-weight: bold;
+            font-size:20px;
+            background-color: white;
+            border: 2px outset white;
+            border-radius: 7px;
+            padding-left: 5px;
+        }
+
+        .type{
+            text-align: left;
+            font-weight: bold;
+            font-size: 16px;
+            border: 2px outset white;
+            border-radius: 7px;
+            padding-left: 5px;
+            background-color: white;
+        }
+
+        .art-and-flavor{
+            margin-left: 8px;
+            margin-right: 8px;
+            border-left: 1px solid black;
+            border-right: 1px solid black;
+        }
+
+        .flavor-box{
+            margin-left: 8px;
+            margin-right: 8px;
+            border-left: 1px solid black;
+            border-right: 1px solid black;
+        }
+
+        .flavor{
+            text-align: left;
+            font-style: italic;
+            font-size: 16px;
+            background-color: white;
+            padding: 2px;
+            padding-left: 4px;
+            border: 1px inset white;
+            min-height: 78px;
+        }
+
+        .name{
+            text-align: center;
+            font-weight: bold;
+            font-size: 24px;
+            background-color: #aaaaaa;
+            border-bottom: 1px solid black;
+        }
+
+        .title-text{
+            /*font-family:'Times New Roman', Times, serif;*/
+            font-weight: bold;
+            font-style: italic;
+            font-size:25px;
+            margin-top: 5px;
+        }
+
+        .clock{
+            font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+            font-size: 50px;
+            border: 1px solid black;
+            padding-left: 20px;
+            margin-top: 15px;
+            background-color: white;
+        }
+
+        #main{
+            font-family:Arial, Helvetica, sans-serif;
+            font-size: 18px;
+            background-color: #CDF;
+            margin-right: 20px;
+        }
+
+        table {
+            border: 2px solid rgb(80 80 80);
+            border-collapse: collapse;
+            border-spacing: 0;
+            width: 100%;
+            margin-top: 8px;
+            background-color: white;
+        }
+        th {
+            border: 1px solid rgb(120 120 120);
+            background-color: #ddd;
+            padding-top: 3px;
+            padding-bottom: 3px;
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+        td {
+            border: 1px solid rgb(160 160 160);
+            padding-top: 2px;
+            padding-bottom: 2px;
+            padding-left: 5px;
+            padding-right: 5px;
+        }
+        input[type=button]{
+            background-color:#79e;
+            border-radius: 15px;
+            border: 1px solid #358;
+            cursor: pointer;
+            padding: 5px 15px;
+            font-size: 15px;
+            font-weight: bold;
+            box-shadow: 0 3px #358;
+            transition: 0.3s ease-out;
+            margin-top: 10px;
+        }
+        input[type=button]:hover{
+            background-color:#37e;
+        }
+        input[type=button]:active{
+            background-color:#57c;
+            box-shadow: 0 1px #358;
+            transform: translateY(2px);
+            transition: 0.07s ease-out;
+        }
+        input[type=button]:disabled{
+            background-color:#bcd;
+            box-shadow: 0 1px #9ab;
+            transform: translateY(2px);
+        }
+        details{
+            border: 1px solid #888;
+            padding: 5px;
+            background-color: white;
+        }
+        summary{
+            margin: 5px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+    </style>
+</head>
+<body onload="disable()">
+    <script>
+
+        var interval;
+        var timer = 0;
+        var attackingPlayer;
+        var defendingPlayer;
+        var numPlayers = 2;
+        var names;
+        var colors;
+        var scores;
+        var images;
+        var rerolls;
+        var judge = 0;
+        var prefix = "https://api.scryfall.com/cards/random?q=";
+        //var suffix = "";
+        var suffix = "+has:flavor+-is:dfc+-(t:legendary+art:universes-beyond)+-is:playtest+-set:SLD"
+        
+        var borderToRGB = {
+            "": "#AAA",
+            "W": "#FEA",
+            "U": "#7AF",
+            "B": "#A5F",
+            "R": "#F76",
+            "G": "#6D6",
+            "UW": "#BCF",
+            "BW": "#B9D",
+            "RW": "#FBA",
+            "GW": "#BF8",
+            "BU": "#76F",
+            "RU": "#E7E",
+            "GU": "#3DD",
+            "BR": "#F57",
+            "BG": "#2B8",
+            "GR": "#FA6"
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        function disable(){
+            let newRoundButton = document.getElementById("new-round");
+            newRoundButton.disabled = true;
+            let actionButton = document.getElementById("action-button");
+            actionButton.disabled = true;
+        }
+
+        async function newRound(){
+            let newRoundButton = document.getElementById("new-round");
+            newRoundButton.disabled = true;
+            resetCards();
+            rerolls = new Array(numPlayers).fill(0);
+            for(let i = 1; i <= numPlayers; i++){
+                await newCards("p" + i);
+            }
+            let check = document.getElementById("advanced")
+            if(check.checked){
+                let parent = document.getElementById("modifiers");
+                if(parent == null){
+                    parent = document.createElement("div");
+                    parent.id = "modifiers";
+                    parent.classList.add("column");
+                    parent.style.backgroundColor = "#CEE";
+                    doc = document.getElementById("window");
+                    doc.appendChild(parent);
+
+                    let name = document.createElement("div");
+                    name.classList.add("name");
+                    name.textContent = "Modifiers";
+                    name.style.backgroundColor = "#9DD"
+                    name.id = "name-modifiers";
+                    parent.appendChild(name);
+                }
+
+                let arenaDiv = await newCard("arena", "ARENA", "t:land");
+                arenaDiv.style.backgroundColor = "#976"
+                parent.appendChild(arenaDiv);
+                let scenarioDiv = await newCard("scenario", "SCENARIO", "t:enchantment+-t:creature+-t:aura");
+                scenarioDiv.style.backgroundColor = "#9ad"
+                parent.appendChild(scenarioDiv);
+            }
+            
+
+            let actionButton = document.getElementById("action-button");
+            actionButton.onclick = attack;
+            actionButton.disabled = false;
+            attackingPlayer = 1;
+            if(attackingPlayer == judge){
+                attackingPlayer++;
+            }
+            defendingPlayer = 0;
+            newRoundButton.disabled = false;
+            let instructions = document.getElementById("instructions");
+            if(document.getElementById("judge-status").value == "turn"){
+                instructions.innerHTML = "<strong>" + names[judge-1] + "</strong> is the JUDGE. Click on any GUY, STUFF, or TECHNIQUE to reroll it, up to one per player. Once that's done, click <strong>Start Attack</strong> to start <strong>" + names[attackingPlayer - 1] + "</strong>'s attack";
+            }
+            else{
+                instructions.innerHTML = "Click on any GUY, STUFF, or TECHNIQUE to reroll it, up to one per player. Once that's done, click <strong>Start Attack</strong> to start <strong>" + names[attackingPlayer - 1] + "</strong>'s attack";
+            }
+            
+        }
+
+        function resetElement(id){
+            let el = document.getElementById(id);
+            if(el != null){
+                el.remove();
+            }
+        }
+
+        function resetCards(){
+            for(let i = 1; i <= numPlayers; i++){
+                let id = "p" + i
+                resetElement(id + "-guy");
+                resetElement(id + "-stuff");
+                resetElement(id + "-tech");
+                resetElement("image-" + i);
+            }
+            resetElement("arena");
+            resetElement("scenario");
+        }
+
+        async function newCards(id){
+            let parent = document.getElementById(id);
+            if(id != "p" + judge){
+                let guyDiv = await newCard(id + "-guy", "GUY", "t:creature");
+                guyDiv.style.backgroundColor = "#7c7"
+                parent.appendChild(guyDiv);
+                stuffUrl = "t:equipment";
+                if(document.getElementById("stuff").checked){
+                    stuffUrl = "(t:equipment+or+o:\"enchanted+creature+gets+%2B\"+or+o:\"enchanted+creature+has\")"
+                }
+                let stuffDiv = await newCard(id + "-stuff", "STUFF", stuffUrl);
+                stuffDiv.style.backgroundColor = "#bbb"
+                parent.appendChild(stuffDiv);
+                let techDiv = await newCard(id + "-tech", "TECHNIQUE", "(t:instant+or+t:sorcery)+-t:creature");
+                techDiv.style.backgroundColor = "#E77"
+                parent.appendChild(techDiv);
+            }
+            else{
+                let guyDiv = await newCard(id + "-guy", "JUDGE", "t:creature+judge");
+                guyDiv.style.backgroundColor = "#FB2"
+                parent.appendChild(guyDiv);
+            }
+            //newCard(id, "https://api.scryfall.com/cards/random?q=t:creature");
+            
+        }
+
+        async function newCard(id, typeText, url){
+            let cardDiv = document.createElement("div");
+            cardDiv.classList.add("card")
+            cardDiv.id = id
+            cardDiv.onclick = reroll;
+
+            var response = await fetch(prefix + url + suffix);
+            let card = await response.json();
+
+            resetElement(id + "-outer-title");
+            let outerTitle = document.createElement("div");
+            outerTitle.id = id + "-outer-title";
+            outerTitle.classList.add("outer-edge");
+            cardDiv.appendChild(outerTitle);
+
+            resetElement(id + "-title");
+            let title = document.createElement("div");
+            let name = card.name;
+            if(name.includes("//")){
+                name = name.substring(0, name.indexOf("//"));
+            }
+            title.textContent = name;
+            title.id = id + "-title";
+            title.classList.add("title");
+            outerTitle.appendChild(title);
+
+            resetElement(id + "-AAF");
+            let artAndFlavor = document.createElement("div");
+            artAndFlavor.id = id + "-AAF";
+            artAndFlavor.classList.add("art-and-flavor");
+
+            resetElement(id + "-art");
+            if(card.image_uris != null){
+                let art = document.createElement("img");
+                art.src = card.image_uris.art_crop;
+                art.id = id + "-art";
+                //art.style.width = (cardDiv.clientWidth - 20) + "px";
+                art.style.width = "100%";
+                artAndFlavor.appendChild(art);
+                cardDiv.appendChild(artAndFlavor);
+            }
+            else{
+                console.log(card.scryfall_uri);
+            }
+
+            resetElement(id + "-outer-type");
+            let outerType = document.createElement("div");
+            outerType.id = id + "-outer-type";
+            outerType.classList.add("outer-edge");
+            cardDiv.appendChild(outerType);
+
+            resetElement(id + "-type");
+            let type = document.createElement("div");
+            type.textContent = typeText;
+            type.id = id + "-type";
+            type.classList.add("type");
+            outerType.appendChild(type);
+
+            resetElement(id + "-flavor-box");
+            let flavorBox = document.createElement("div");
+            flavorBox.classList.add("flavor-box");
+            flavorBox.id = id + "-flavor-box";
+            cardDiv.appendChild(flavorBox);
+
+            resetElement(id + "-flavor");
+            let flavor = document.createElement("div");
+            flavor.textContent = card.flavor_text
+            flavor.id = id + "-flavor";
+            flavor.classList.add("flavor");
+            flavorBox.appendChild(flavor);
+
+
+            await sleep(100);
+            return cardDiv;
+        }
+
+        async function getName(){
+            var response = await fetch("https://api.scryfall.com/cards/random?q=t:planeswalker+-is:dfc+-is:playtest");
+            let card = await response.json();
+            let name = card.name;
+            if(name.includes(",")){
+                name = name.substring(0, name.indexOf(","));
+            }
+            if(name.includes(" and ")){
+                name = name.substring(0, name.indexOf(" and "));
+            }
+            if(name.includes(" on the ")){
+                name = name.substring(0, name.indexOf(" on the "));
+            }
+            if(name.includes(" of the ")){
+                name = name.substring(0, name.indexOf(" of the "));
+            }
+            if(name.includes(" the ")){
+                name = name.substring(0, name.indexOf(" the "));
+            }
+            if(name.substring(0, 2) == "A-"){
+                name = name.substring(2);
+            }
+            let color = "";
+            for(i of card.color_identity){
+                color = color + i;
+            }
+            let bgColor = borderToRGB[color];
+            if(bgColor == null){
+                bgColor = "#FB2";
+                console.log(color);
+            }
+            image = card.image_uris.art_crop;
+            await sleep(100);
+            return [name, bgColor, image];
+        }
+
+        async function getNames(num){
+            names = [];
+            colors = [];
+            scores = [];
+            images = [];
+            while(names.length < num){
+                let result = await getName();
+                let name = result[0];
+                let color = result[1];
+                let image = result[2];
+                let copy = false;
+                for (i of names){
+                    if(name == i){
+                        copy = true;
+                    }
+                }
+                if(!copy){
+                    names.push(name);
+                    colors.push(color);
+                    images.push(image);
+                    scores.push(0);
+                }
+            }
+        }
+
+        async function newGame(){
+            let newGameButton = document.getElementById("new-game");
+            newGameButton.disabled = true;
+            let stillDivs = true;
+            numPlayers = Number(document.getElementById("num-players").value);
+            let i = 1;
+            while(stillDivs == true){
+                div = document.getElementById("p" + i);
+                if(div != null){
+                    div.remove();
+                }
+                else{
+                    stillDivs = false;
+                }
+                i++;
+            }
+            await getNames(numPlayers);
+            let window = document.getElementById("window");
+            for(let i = 1; i <= numPlayers; i++){
+                let column = document.createElement("div");
+                column.classList.add("column");
+                column.id = "p" + i;
+                let name = document.createElement("div");
+                name.classList.add("name");
+                name.textContent = names[i-1];
+                name.style.backgroundColor = colors[i-1];
+                name.id = "name-" + 1;
+                column.appendChild(name);
+
+                let image = document.createElement("img");
+                image.id = "image-" + i;
+                image.src = images[i-1];
+                image.style.width = "100%";
+                column.appendChild(image);
+                window.appendChild(column);
+            }
+            if(document.getElementById("judge-status").value == "turn"){
+                judge = Math.floor(Math.random() * numPlayers) + 1;
+            }
+
+            resetElement("scores");
+
+
+            newGameButton.disabled = false;
+            let newRoundButton = document.getElementById("new-round");
+            newRoundButton.disabled = false;
+            let instructions = document.getElementById("instructions");
+            instructions.innerHTML = "You will all play as SPECIAL WIZARDS. Have everyone choose a SPECIAL WIZARD and click <strong>New Round</strong> to pick cards for the next round";
+            scoreTable();
+        }
+
+        function scoreTable(){
+            resetElement("score-table");
+            let table = document.createElement("table");
+            table.id = "score-table";
+            let header = document.createElement("tr");
+            let h1 = document.createElement("th");
+            h1.textContent = "Name";
+            let h2 = document.createElement("th");
+            h2.textContent = "Score";
+            header.appendChild(h1);
+            header.appendChild(h2);
+            table.appendChild(header);
+            for(let i = 0; i < numPlayers; i++){
+                let row = document.createElement("tr");
+                let name = document.createElement("td");
+                name.textContent = names[i];
+                let score = document.createElement("td");
+                score.textContent = scores[i];
+                row.appendChild(name);
+                row.appendChild(score);
+                table.appendChild(row);
+            }
+            document.getElementById("main").appendChild(table);
+        }
+
+        function attack(){
+            console.log("attacking");
+            let attacking = document.getElementById("p" + attackingPlayer);
+            attacking.style.backgroundColor = "#FAA";
+            if(defendingPlayer > 0){
+                let defending = document.getElementById("p" + defendingPlayer);
+                defending.style.backgroundColor = "#AFA";
+                let actionButton = document.getElementById("action-button");
+                actionButton.value = "End Defense";
+                setTimer(30);
+                let instructions = document.getElementById("instructions");
+                instructions.innerHTML = "<strong>" + names[defendingPlayer - 1] + "</strong>: Explain why <strong>" + names[attackingPlayer - 1] + "</strong>'s' GUY would lose";
+            }
+            else{
+                let actionButton = document.getElementById("action-button");
+                actionButton.value = "End Attack";
+                setTimer(90);
+                let instructions = document.getElementById("instructions");
+                instructions.innerHTML = "<strong>" + names[attackingPlayer - 1] + "</strong>: Explain why your GUY would win";
+            }
+            let actionButton = document.getElementById("action-button");
+            actionButton.onclick = reset;
+        }
+
+        function setTimer(time){
+            timer = time;
+            timerDisplay(timer);
+            interval = setInterval(tick, 1000);
+        }
+
+        function tick(){
+            timer--;
+            timerDisplay(timer);
+            if(timer <= 0){
+                reset();
+            }
+        }
+
+        function timerDisplay(time){
+            let clock = document.getElementById("clock");
+            let minutes = Math.floor(time / 60);
+            let seconds = time % 60;
+            clock.textContent = minutes + ":" + seconds.toString().padStart(2, '0');
+        }
+
+        function reset(){
+            clearInterval(interval);
+            for (let i = 1; i <= numPlayers; i++){
+                let player = document.getElementById("p" + i);
+                player.style.backgroundColor = "#FFF";
+            }
+            let actionButton = document.getElementById("action-button");
+            actionButton.onclick = attack;
+            actionButton.value = "Start Defense";
+            timerDisplay(0);
+            defendingPlayer++;
+            while(defendingPlayer == attackingPlayer || defendingPlayer == judge){
+                defendingPlayer++;
+            }
+            let instructions = document.getElementById("instructions");
+            instructions.innerHTML = "Click <strong>Start Defense</strong> to start <strong>" + names[defendingPlayer - 1] + "</strong>'s defense";
+            if(defendingPlayer > numPlayers){
+                defendingPlayer = 0;
+                attackingPlayer++;
+                if(attackingPlayer == judge){
+                    attackingPlayer++;
+                }
+                actionButton.value = "Start Attack";
+                timerDisplay(0);
+                instructions.innerHTML = "Click <strong>Start Attack</strong> to start <strong>" + names[attackingPlayer - 1] + "</strong>'s attack";
+            }
+            if(attackingPlayer > numPlayers){
+                actionButton.value = "Submit Score";
+                timerDisplay(0);
+                if(document.getElementById("score-method").value == "win"){
+                    instructions.innerHTML = "<strong>" + names[judge-1] + "</strong>: decide who wins this fight";
+                }
+                else if(document.getElementById("score-method").value == "points"){
+                    instructions.innerHTML = "<strong>" + names[judge-1] + "</strong>: assign points for each player";
+                }
+                
+                actionButton.onclick = judgeScore;
+                presentScore();
+                
+            }
+        }
+
+        function presentScore(){
+            resetElement("judge-options");
+            let scoreMethod = document.getElementById("score-method");
+            if(scoreMethod.value == "win"){
+                let options = document.createElement("div");
+                options.id = "judge-options";
+                options.style.marginTop = "10px";
+                for(let i = 1; i <= numPlayers; i++){
+                    if(i != judge){
+                        radio = document.createElement("input");
+                        radio.type = "radio";
+                        radio.id = "p" + i + "-win";
+                        radio.name = "winner-select";
+                        radio.value = i;
+                        label = document.createElement("label");
+                        label.for = radio.id;
+                        label.innerHTML = names[i-1] + "<br>";
+                        options.appendChild(radio);
+                        options.appendChild(label);
+                    }
+                }
+                document.getElementById("instructions").appendChild(options);
+            }
+            else if(scoreMethod.value == "points"){
+                let table = document.createElement("table");
+                table.style.border = "0";
+                //table.style.marginTop = "0px";
+                table.style.width = "auto";
+                table.id = "judge-options";
+                for(let i = 1; i <= numPlayers; i++){
+                    if(i != judge){
+                        text = document.createElement("input");
+                        text.type = "text";
+                        text.id = "p" + i + "-points";
+                        text.value = 0;
+                        text.style.width = "30px";
+                        label = document.createElement("label");
+                        label.for = text.id;
+                        label.textContent = names[i-1];
+                        label.style.float = "right";
+
+                        textBox = document.createElement("td");
+                        textBox.style.border = "0";
+                        textBox.appendChild(text);
+
+                        labelBox = document.createElement("td");
+                        labelBox.style.border = "0";
+                        labelBox.appendChild(label);
+                        labelBox.style.paddingLeft = "0px";
+
+                        row = document.createElement("tr");
+                        row.appendChild(labelBox);
+                        row.appendChild(textBox);
+
+                        table.appendChild(row);
+                    }
+                }
+                document.getElementById("instructions").appendChild(table);
+            }
+        }
+
+        function judgeScore(){
+            let scoreMethod = document.getElementById("score-method");
+            let winner = -1;
+            if(scoreMethod.value == "win"){
+                for(let i = 1; i <= numPlayers; i++){
+                    if(i != judge){
+                        element = document.getElementById("p" + i + "-win");
+                        if(element.checked){
+                            winner = i - 1;
+                        }
+                    }
+                }
+                if(winner >= 0){
+                    scores[winner]++;
+                }
+            }
+            else if(scoreMethod.value == "points"){
+                let highScore = -1;
+                let numWinners = 1;
+                for(let i = 1; i <= numPlayers; i++){
+                    if(i != judge){
+                        element = document.getElementById("p" + i + "-points");
+                        let points = Number(element.value);
+                        scores[i-1] += points;
+                        if(points > highScore){
+                            highScore = points;
+                            winner = i - 1;
+                            numWinners = 1;
+                        }
+                        else if(points == highScore){
+                            numWinners++;
+                            if(Math.random() * numWinners < 1){
+                                winner = i - 1;
+                            }
+                        }
+                    }
+                }
+            }
+            if(document.getElementById("judge-status").value == "turn"){
+                judge = winner + 1;
+            }
+            resetElement("judge-options");
+            scoreTable();
+            let actionButton = document.getElementById("action-button");
+            actionButton.onclick = attack;
+            actionButton.value = "Start Attack";
+            actionButton.disabled = true;
+            let instructions = document.getElementById("instructions");
+            instructions.innerHTML = "Click <strong>New Round</strong> to pick cards for the next round";
+        }
+
+        async function reroll(){
+            // console.log(event.srcElement.id);
+            let srcId = event.srcElement.id
+            let source = srcId.split("-");
+            srcId = source[0] + "-" + source[1];
+            let parent = document.getElementById(source[0]);
+            let num = Number(source[0].substring(1)) - 1;
+            if((attackingPlayer > 1 && judge != 1) || attackingPlayer > 2 || defendingPlayer > 0 || rerolls[num] > 0){
+                console.log(attackingPlayer + ", " + defendingPlayer);
+                return;
+            }
+            rerolls[num]++;
+            console.log(rerolls);
+            if(source[1] == "guy"){
+                resetElement(srcId);
+                let guyDiv = await newCard(srcId, "GUY", "t:creature");
+                guyDiv.style.backgroundColor = "#7c7"
+                let stuffDiv = document.getElementById(source[0] + "-stuff");
+                parent.insertBefore(guyDiv, stuffDiv);
+            }
+            if(source[1] == "stuff"){
+                resetElement(srcId);
+                stuffUrl = "t:equipment";
+                if(document.getElementById("stuff").checked){
+                    stuffUrl = "(t:equipment+or+o:\"enchanted+creature+gets+%2B\"+or+o:\"enchanted+creature+has\")";
+                }
+                let stuffDiv = await newCard(srcId, "STUFF", stuffUrl);
+                stuffDiv.style.backgroundColor = "#bbb"
+                let techDiv = document.getElementById(source[0] + "-tech");
+                parent.insertBefore(stuffDiv, techDiv);
+            }
+            if(source[1] == "tech"){
+                resetElement(srcId);
+                let techDiv = await newCard(srcId, "TECHNIQUE", "(t:instant+or+t:sorcery)+-t:creature");
+                techDiv.style.backgroundColor = "#E77"
+                parent.appendChild(techDiv);
+            }
+            /*guyDiv.style.backgroundColor = "#7c7"
+            parent.appendChild(guyDiv);*/
+            
+            
+        }
+
+
+    </script>
+    <div id = "window">
+        <div class="column" id="main" style="padding:5px">
+            <p class = "title-text">I'M NOT LEARNING TO PLAY MAGICAL GATHERING</p>
+            <details style="font-size: 15px; border-bottom: 0px">
+                <summary>Rules</summary>
+                Lightly altered from <a href="https://www.tumblr.com/txttletale/768249226543185920/im-not-learning-to-play-magical-gathering" target="_blank">this Tumblr post</a><br><br>
+                First, decide who's the JUDGE.<br><br>
+                Each non-JUDGE player should randomly select Magic: The Gathering cards representing their GUY, their guy's STUFF, and their guy's SPECIAL TECHNIQUE.<br><br>
+                Each round, you may reroll one result. Once every player has decided whether to reroll, take turns to ATTACK (explain in 90 SECONDS why your GUY would beat the others in free-for-all combat with their STUFF and TECHNIQUE).<br><br>
+                After each ATTACK, the other players may each DEFEND (spend 30 seconds explaining why the ATTACKING player is wrong).<br><br>
+                You are only allowed to refer to the name, art, and flavour text of relevant cards to make your arguments; you may not refer to any rules text on those cards or to any Magic: The Gathering rules concepts or lore.<br><br>
+                Once all ATTACKS and DEFENSES are finished, the JUDGE decides a winner under the same criteria. That winner is the JUDGE for next round.
+            </details>
+            <details style="line-height: 150%">
+                <summary>Options</summary>
+                Players: <input type="text" id="num-players" value="2" style="width: 30px"> <br>
+                Advanced Modifiers: <input type="checkbox" id="advanced" value="false"> <br>
+                Advanced STUFF: <input type="checkbox" id="stuff" value="false"> <br>
+                <label for="score-method">Scoring: </label>
+                <select id="score-method">
+                    <option value="win">Single Winner</option selected="selected">
+                    <option value="points">Award Points</option>
+                </select> <br>
+                <label for="judge-status">Judge: </label>
+                <select id="judge-status">
+                    <option value="turn">Players Take Turns</option selected="selected">
+                    <option value="fixed">Dedicated Judge</option>
+                </select> <br>
+            </details>
+            <div id="instructions" style="min-height: 160px; border: 1px solid #888; background-color: white; padding:5px; margin-top: 10px; margin-bottom: 10px">
+                Enter the number of players in the <strong>Options</strong> menu and click <strong>New Game</strong><br>
+                Use of fullscreen (F11) is recommended
+            </div>
+            <input type="button" value="New Game" onclick="newGame()" id="new-game" style="width: 150px"><br>
+            <input type="button" disabled="true" value="New Round" onclick="newRound()" id="new-round" style="width: 150px"><br>
+            <input type="button" disabled="true" value="Start Attack" onclick="attack()" id="action-button" style="width: 150px">
+            <div class="clock" id="clock">
+                0:00
+            </div>
+        </div>
+        <!--<div class="column" id="p1"></div>
+        <div class="column" id="p2"></div>-->
+    </div>
+    
+
+</body>
