@@ -3,7 +3,7 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Magical Gathering</title>
+    <title>I'M NOT LEARNING TO PLAY MAGICAL GATHERING</title>
     <style>
         html{
             box-sizing: border-box;
@@ -227,6 +227,7 @@
 
         async function newRound(){
             let newRoundButton = document.getElementById("new-round");
+            newRoundButton.value = "Loading..."
             newRoundButton.disabled = true;
             resetCards();
             rerolls = new Array(numPlayers).fill(0);
@@ -270,6 +271,7 @@
             }
             defendingPlayer = 0;
             newRoundButton.disabled = false;
+            newRoundButton.value = "New Round";
             let instructions = document.getElementById("instructions");
             if(document.getElementById("judge-status").value == "turn"){
                 instructions.innerHTML = "<strong>" + names[judge-1] + "</strong> is the JUDGE. Click on any GUY, STUFF, or TECHNIQUE to reroll it, up to one per player. Once that's done, click <strong>Start Attack</strong> to start <strong>" + names[attackingPlayer - 1] + "</strong>'s attack";
@@ -464,9 +466,12 @@
 
         async function newGame(){
             let newGameButton = document.getElementById("new-game");
+            newGameButton.value = "Loading...";
             newGameButton.disabled = true;
+            let actionButton = document.getElementById("action-button");
+            actionButton.disabled = true;
             let stillDivs = true;
-            numPlayers = Number(document.getElementById("num-players").value);
+            numPlayers = Math.max(Number(document.getElementById("num-players").value), 6);
             let i = 1;
             while(stillDivs == true){
                 div = document.getElementById("p" + i);
@@ -506,6 +511,7 @@
 
 
             newGameButton.disabled = false;
+            newGameButton.value = "New Game";
             let newRoundButton = document.getElementById("new-round");
             newRoundButton.disabled = false;
             let instructions = document.getElementById("instructions");
@@ -549,7 +555,7 @@
                 actionButton.value = "End Defense";
                 setTimer(30);
                 let instructions = document.getElementById("instructions");
-                instructions.innerHTML = "<strong>" + names[defendingPlayer - 1] + "</strong>: Explain why <strong>" + names[attackingPlayer - 1] + "</strong>'s' GUY would lose";
+                instructions.innerHTML = "<strong>" + names[defendingPlayer - 1] + "</strong>: Explain why <strong>" + names[attackingPlayer - 1] + "</strong>'s GUY would lose";
             }
             else{
                 let actionButton = document.getElementById("action-button");
@@ -610,13 +616,13 @@
                 instructions.innerHTML = "Click <strong>Start Attack</strong> to start <strong>" + names[attackingPlayer - 1] + "</strong>'s attack";
             }
             if(attackingPlayer > numPlayers){
-                actionButton.value = "Submit Score";
+                actionButton.value = "Submit Results";
                 timerDisplay(0);
                 if(document.getElementById("score-method").value == "win"){
-                    instructions.innerHTML = "<strong>" + names[judge-1] + "</strong>: decide who wins this fight";
+                    instructions.innerHTML = "<strong>" + names[judge-1] + "</strong>: Choose a winner, then click <strong>Submit Results</strong>";
                 }
                 else if(document.getElementById("score-method").value == "points"){
-                    instructions.innerHTML = "<strong>" + names[judge-1] + "</strong>: assign points for each player";
+                    instructions.innerHTML = "<strong>" + names[judge-1] + "</strong>: Assign points for each player, then click <strong>Submit Results</strong>";
                 }
                 
                 actionButton.onclick = judgeScore;
