@@ -471,7 +471,7 @@
             let actionButton = document.getElementById("action-button");
             actionButton.disabled = true;
             let stillDivs = true;
-            numPlayers = Math.max(Number(document.getElementById("num-players").value), 6);
+            numPlayers = Math.min(Number(document.getElementById("num-players").value), 6);
             let i = 1;
             while(stillDivs == true){
                 div = document.getElementById("p" + i);
