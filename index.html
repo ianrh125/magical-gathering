@@ -644,11 +644,15 @@
             if(attackingPlayer > numPlayers){
                 actionButton.value = "Submit Results";
                 timerDisplay(0);
+                let judgeName = "Judge";
+                if(judge > 0){
+                    judgeName = names[judge-1]
+                }
                 if(document.getElementById("score-method").value == "win"){
-                    instructions.innerHTML = "<strong>" + names[judge-1] + "</strong>: Choose a winner, then click <strong>Submit Results</strong>";
+                    instructions.innerHTML = "<strong>" + judgeName + "</strong>: Choose a winner, then click <strong>Submit Results</strong>";
                 }
                 else if(document.getElementById("score-method").value == "points"){
-                    instructions.innerHTML = "<strong>" + names[judge-1] + "</strong>: Assign points for each player, then click <strong>Submit Results</strong>";
+                    instructions.innerHTML = "<strong>" + judgeName + "</strong>: Assign points for each player, then click <strong>Submit Results</strong>";
                 }
                 
                 actionButton.onclick = judgeScore;
