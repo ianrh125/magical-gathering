@@ -142,12 +142,13 @@
             padding-right: 0.25vw;
         }
         input[type=button]{
+            width: 13vw;
             background-color:#79e;
-            border-radius: 0.75vw;
+            border-radius: 1.5vw;
             border: 1px solid #358;
             cursor: pointer;
-            padding: 0.25vw 0.75vw;
-            font-size: 0.75vw;
+            padding: 0.25vw 1vw;
+            font-size: 1.5vw;
             font-weight: bold;
             box-shadow: 0 3px #358;
             transition: 0.3s ease-out;
@@ -846,9 +847,9 @@
                 Enter the number of players in the <strong>Options</strong> menu and click <strong>New Game</strong><br><br>
                 Use of fullscreen (F11) is recommended
             </div>
-            <input type="button" value="New Game" onclick="newGame()" id="new-game" style="width: 7.5vw"><br>
-            <input type="button" disabled="true" value="New Round" onclick="newRound()" id="new-round" style="width: 7.5vw"><br>
-            <input type="button" disabled="true" value="Start Attack" onclick="attack()" id="action-button" style="width: 7.5vw">
+            <input type="button" value="New Game" onclick="newGame()" id="new-game"><br>
+            <input type="button" disabled="true" value="New Round" onclick="newRound()" id="new-round"><br>
+            <input type="button" disabled="true" value="Start Attack" onclick="attack()" id="action-button">
             <div class="clock" id="clock">
                 0:00
             </div>
