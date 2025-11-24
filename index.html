@@ -58,7 +58,7 @@
             background-color: white;
         }
 
-        .art-and-flavor{
+        .art-box{
             margin-left: 8px;
             margin-right: 8px;
             border-left: 1px solid black;
@@ -80,7 +80,8 @@
             padding: 2px;
             padding-left: 4px;
             border: 1px inset white;
-            min-height: 78px;
+            width: 100%;
+            aspect-ratio: 7/3;
         }
 
         .name{
@@ -231,6 +232,12 @@
             newRoundButton.disabled = true;
             resetCards();
             rerolls = new Array(numPlayers).fill(0);
+            let actionButton = document.getElementById("action-button");
+            actionButton.value = "Start Attack";
+            actionButton.onclick = attack;
+            actionButton.disabled = true;
+            clearInterval(interval);
+            timerDisplay(0);
             for(let i = 1; i <= numPlayers; i++){
                 await newCards("p" + i);
             }
@@ -262,7 +269,6 @@
             }
             
 
-            let actionButton = document.getElementById("action-button");
             actionButton.onclick = attack;
             actionButton.disabled = false;
             attackingPlayer = 1;
@@ -353,16 +359,17 @@
             title.classList.add("title");
             outerTitle.appendChild(title);
 
-            resetElement(id + "-AAF");
+            resetElement(id + "-art-box");
             let artAndFlavor = document.createElement("div");
-            artAndFlavor.id = id + "-AAF";
-            artAndFlavor.classList.add("art-and-flavor");
+            artAndFlavor.id = id + "-art-box";
+            artAndFlavor.classList.add("art-box");
 
             resetElement(id + "-art");
             if(card.image_uris != null){
                 let art = document.createElement("img");
                 art.src = card.image_uris.art_crop;
                 art.id = id + "-art";
+                art.style.aspectRatio = "1.37";
                 //art.style.width = (cardDiv.clientWidth - 20) + "px";
                 art.style.width = "100%";
                 artAndFlavor.appendChild(art);
@@ -469,9 +476,14 @@
             newGameButton.value = "Loading...";
             newGameButton.disabled = true;
             let actionButton = document.getElementById("action-button");
+            actionButton.value = "Start Attack";
+            actionButton.onclick = attack;
             actionButton.disabled = true;
+            clearInterval(interval);
+            timerDisplay(0);
             let stillDivs = true;
             numPlayers = Math.min(Number(document.getElementById("num-players").value), 6);
+            resetElement("modifiers");
             let i = 1;
             while(stillDivs == true){
                 div = document.getElementById("p" + i);
