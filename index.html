@@ -22,52 +22,52 @@
             padding: 0px;
             display: inline-block;
             height: 100%;
-            width: 14%;
+            width: 14vw;
             border: 1px solid black;
         }
 
         .card{
-            border: 8px solid black;
-            border-radius: 16px;
+            border: 0.4vw solid black;
+            border-radius: 0.8vw;
             background-color: #cccccc;
-            margin: 5px;
+            margin: 0.25vw;
         }
 
         .outer-edge{
             border: 1px solid black;
-            border-radius: 8px;
+            border-radius: 0.4vw;
         }
         
         .title{
             text-align: left;
             font-weight: bold;
-            font-size:20px;
+            font-size:1vw;
             background-color: white;
-            border: 2px outset white;
-            border-radius: 7px;
-            padding-left: 5px;
+            border: 0.1vw outset white;
+            border-radius: 0.4vw;
+            padding-left: 0.25vw;
         }
 
         .type{
             text-align: left;
             font-weight: bold;
-            font-size: 16px;
-            border: 2px outset white;
-            border-radius: 7px;
-            padding-left: 5px;
+            font-size: 0.8vw;
+            border: 0.1vw outset white;
+            border-radius: 0.4vw;
+            padding-left: 0.25vw;
             background-color: white;
         }
 
         .art-box{
-            margin-left: 8px;
-            margin-right: 8px;
+            margin-left: 0.4vw;
+            margin-right: 0.4vw;
             border-left: 1px solid black;
             border-right: 1px solid black;
         }
 
         .flavor-box{
-            margin-left: 8px;
-            margin-right: 8px;
+            margin-left: 0.4vw;
+            margin-right: 0.4vw;
             border-left: 1px solid black;
             border-right: 1px solid black;
         }
@@ -75,19 +75,20 @@
         .flavor{
             text-align: left;
             font-style: italic;
-            font-size: 16px;
+            font-size: 1vw;
             background-color: white;
-            padding: 2px;
-            padding-left: 4px;
+            padding: 0.1vw;
+            padding-left: 0.2dvw;
             border: 1px inset white;
             width: 100%;
-            aspect-ratio: 7/3;
+            /*aspect-ratio: 7/3;*/
+            min-height: 5.2vw;
         }
 
         .name{
             text-align: center;
             font-weight: bold;
-            font-size: 24px;
+            font-size: 1.2vw;
             background-color: #aaaaaa;
             border-bottom: 1px solid black;
         }
@@ -96,60 +97,61 @@
             /*font-family:'Times New Roman', Times, serif;*/
             font-weight: bold;
             font-style: italic;
-            font-size:25px;
-            margin-top: 5px;
+            font-size: 1.4vw;
+            margin-top: 0.25vw;
         }
 
         .clock{
             font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
-            font-size: 50px;
+            font-size: 2.5vw;
             border: 1px solid black;
-            padding-left: 20px;
-            margin-top: 15px;
+            padding-left: 1vw;
+            margin-top: 0.75vw;
             background-color: white;
         }
 
         #main{
             font-family:Arial, Helvetica, sans-serif;
-            font-size: 18px;
+            font-size: 0.9vw;
             background-color: #CDF;
-            margin-right: 20px;
+            margin-right: 1vw;
         }
 
         table {
-            border: 2px solid rgb(80 80 80);
+            border: 0.1vw solid rgb(80 80 80);
             border-collapse: collapse;
             border-spacing: 0;
             width: 100%;
-            margin-top: 8px;
+            margin-top: 0.4vw;
             background-color: white;
+            font-size: 1vw;
         }
         th {
             border: 1px solid rgb(120 120 120);
             background-color: #ddd;
-            padding-top: 3px;
-            padding-bottom: 3px;
-            padding-left: 5px;
-            padding-right: 5px;
+            padding-top: 0.15vw;
+            padding-bottom: 0.15vw;
+            padding-left: 0.25vw;
+            padding-right: 0.25vw;
         }
         td {
             border: 1px solid rgb(160 160 160);
-            padding-top: 2px;
-            padding-bottom: 2px;
-            padding-left: 5px;
-            padding-right: 5px;
+            padding-top: 0.1vw;
+            padding-bottom: 0.1vw;
+            padding-left: 0.25vw;
+            padding-right: 0.25vw;
         }
         input[type=button]{
             background-color:#79e;
-            border-radius: 15px;
+            border-radius: 0.75vw;
             border: 1px solid #358;
             cursor: pointer;
-            padding: 5px 15px;
-            font-size: 15px;
+            padding: 0.25vw 0.75vw;
+            font-size: 0.75vw;
             font-weight: bold;
             box-shadow: 0 3px #358;
             transition: 0.3s ease-out;
-            margin-top: 10px;
+            margin-top: 0.5vw;
         }
         input[type=button]:hover{
             background-color:#37e;
@@ -167,13 +169,13 @@
         }
         details{
             border: 1px solid #888;
-            padding: 5px;
+            padding: 0.25vw;
             background-color: white;
         }
         summary{
-            margin: 5px;
+            margin: 0.25vw;
             font-weight: bold;
-            font-size: 18px;
+            font-size: 0.9vw;
         }
         
     </style>
@@ -369,7 +371,7 @@
                 let art = document.createElement("img");
                 art.src = card.image_uris.art_crop;
                 art.id = id + "-art";
-                art.style.aspectRatio = "1.37";
+                art.style.aspectRatio = "1.3";
                 //art.style.width = (cardDiv.clientWidth - 20) + "px";
                 art.style.width = "100%";
                 artAndFlavor.appendChild(art);
@@ -404,6 +406,11 @@
             flavor.id = id + "-flavor";
             flavor.classList.add("flavor");
             flavorBox.appendChild(flavor);
+            let textLen = card.flavor_text.length;
+            if(textLen > 80){
+                let newSize = 1 / Math.sqrt((textLen + 30) / 110);
+                flavor.style.fontSize = newSize + "vw";
+            }
 
 
             await sleep(100);
@@ -482,7 +489,12 @@
             clearInterval(interval);
             timerDisplay(0);
             let stillDivs = true;
-            numPlayers = Math.min(Number(document.getElementById("num-players").value), 6);
+            if(document.getElementById("advanced").checked){
+                numPlayers = Math.min(Number(document.getElementById("num-players").value), 5);
+            }
+            else{
+                numPlayers = Math.min(Number(document.getElementById("num-players").value), 6);
+            }
             resetElement("modifiers");
             let i = 1;
             while(stillDivs == true){
@@ -512,6 +524,7 @@
                 image.id = "image-" + i;
                 image.src = images[i-1];
                 image.style.width = "100%";
+                image.style.aspectRatio = "1.4";
                 column.appendChild(image);
                 window.appendChild(column);
             }
@@ -649,7 +662,7 @@
             if(scoreMethod.value == "win"){
                 let options = document.createElement("div");
                 options.id = "judge-options";
-                options.style.marginTop = "10px";
+                options.style.marginTop = "0.5vw";
                 for(let i = 1; i <= numPlayers; i++){
                     if(i != judge){
                         radio = document.createElement("input");
@@ -678,7 +691,7 @@
                         text.type = "text";
                         text.id = "p" + i + "-points";
                         text.value = 0;
-                        text.style.width = "30px";
+                        text.style.width = "1.5vw";
                         label = document.createElement("label");
                         label.for = text.id;
                         label.textContent = names[i-1];
@@ -801,9 +814,9 @@
 
     </script>
     <div id = "window">
-        <div class="column" id="main" style="padding:5px">
+        <div class="column" id="main" style="padding:0.25vw; margin-right:0.5vw">
             <p class = "title-text">I'M NOT LEARNING TO PLAY MAGICAL GATHERING</p>
-            <details style="font-size: 15px; border-bottom: 0px">
+            <details style="font-size: 0.75vw; border-bottom: 0px">
                 <summary>Rules</summary>
                 Lightly altered from <a href="https://www.tumblr.com/txttletale/768249226543185920/im-not-learning-to-play-magical-gathering" target="_blank">this Tumblr post</a><br><br>
                 First, decide who's the JUDGE.<br><br>
@@ -815,7 +828,7 @@
             </details>
             <details style="line-height: 150%">
                 <summary>Options</summary>
-                Players: <input type="text" id="num-players" value="3" style="width: 30px"> <br>
+                Players: <input type="text" id="num-players" value="3" style="width: 1.5vw"> <br>
                 Advanced Modifiers: <input type="checkbox" id="advanced" value="false"> <br>
                 Advanced STUFF: <input type="checkbox" id="stuff" value="false"> <br>
                 <label for="score-method">Scoring: </label>
@@ -829,19 +842,17 @@
                     <option value="fixed">Dedicated Judge</option>
                 </select> <br>
             </details>
-            <div id="instructions" style="min-height: 160px; border: 1px solid #888; background-color: white; padding:5px; margin-top: 10px; margin-bottom: 10px">
+            <div id="instructions" style="min-height: 8vw; border: 1px solid #888; background-color: white; padding:0.25vw; margin-top: 0.5vw; margin-bottom: 0.5vw">
                 Enter the number of players in the <strong>Options</strong> menu and click <strong>New Game</strong><br><br>
                 Use of fullscreen (F11) is recommended
             </div>
-            <input type="button" value="New Game" onclick="newGame()" id="new-game" style="width: 150px"><br>
-            <input type="button" disabled="true" value="New Round" onclick="newRound()" id="new-round" style="width: 150px"><br>
-            <input type="button" disabled="true" value="Start Attack" onclick="attack()" id="action-button" style="width: 150px">
+            <input type="button" value="New Game" onclick="newGame()" id="new-game" style="width: 7.5vw"><br>
+            <input type="button" disabled="true" value="New Round" onclick="newRound()" id="new-round" style="width: 7.5vw"><br>
+            <input type="button" disabled="true" value="Start Attack" onclick="attack()" id="action-button" style="width: 7.5vw">
             <div class="clock" id="clock">
                 0:00
             </div>
         </div>
-        <!--<div class="column" id="p1"></div>
-        <div class="column" id="p2"></div>-->
     </div>
     
 
